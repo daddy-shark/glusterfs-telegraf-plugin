@@ -7,7 +7,7 @@ import socket
 import sys
 
 
-GLUSTER_PEER_STATUS = '/sbin/gluster peer status'
+GLUSTER_POOL_LIST = '/sbin/gluster pool list'
 GLUSTER_VOLUME_STATUS = '/sbin/gluster volume status'
 
 
@@ -25,13 +25,11 @@ def print_error(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 
-def get_number_of_peers():
-    stdout = get_output(GLUSTER_PEER_STATUS)
+def get_number_of_connected_peers():
+    stdout = get_output(GLUSTER_POOL_LIST)
     if stdout:
-        peers = stdout.splitlines()
-        for line in peers:
-            if 'Number of Peers' in line:
-                return line.split()[-1]
+        connected_pool_list = [line for line in stdout.splitlines() if 'Connected' in line]
+        return len(connected_pool_list)
     return 0
 
 
@@ -59,12 +57,12 @@ def print_metrics(volume):
         'glusterfs_status,'
         'host={host},'
         'volume={volume} '
-        'peers={peers},'
+        'connected_peers={connected_peers},'
         'online_bricks={online_bricks},'
         'is_mounted={is_mounted}'.format(
             host=socket.gethostname(),
             volume=volume,
-            peers=get_number_of_peers(),
+            connected_peers=get_number_of_connected_peers(),
             online_bricks=count_online_bricks(volume),
             is_mounted=check_mount_status(volume),
         )
