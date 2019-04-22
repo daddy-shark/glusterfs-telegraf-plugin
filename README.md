@@ -1,7 +1,7 @@
 # Telegraf plugin to collect GlusterFS metrics
 
 This simple python script should be used via telegraf exec input plugin with influx format. It collects the following GlusterFS metrics:
-- Number of peers (`gluster peer status`)
+- Number of connected peers (`gluster pool list`)
 - Number of online bricks for each volume (`gluster volume status <volume> detail`)
 - Mount status for each volume (by local `/proc/mounts`)
 
@@ -15,8 +15,8 @@ glusterfs_status.py -h
 Usage example:
 ```
 sudo /usr/local/bin/glusterfs_status.py vol1 vol2
-glusterfs_status,host=example_host.com,volume=vol1 peers=2,online_bricks=3,is_mounted=1
-glusterfs_status,host=example_host.com,volume=vol2 peers=2,online_bricks=3,is_mounted=1
+glusterfs_status,host=example_host.com,volume=vol1 connected_peers=3,online_bricks=3,is_mounted=1
+glusterfs_status,host=example_host.com,volume=vol2 connected_peers=3,online_bricks=3,is_mounted=1
 ```
 
 ## Installation
